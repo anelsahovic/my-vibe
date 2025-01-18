@@ -28,6 +28,9 @@ model User {
   updatedAt DateTime @updatedAt
 
   // Relations: 
+  organizedEvents Event[] @relation("OrganizedEvents") // Events organized by the user
+  attendedEvents  Event[] @relation("AttendedEvents") // Events the user is attending
+
   posts    Post[]
   comments Comment[]
   likes    Like[]
@@ -37,6 +40,25 @@ model User {
 
   notifications        Notification[] @relation("userNotifications") // notifications received by a user
   notificationsCreated Notification[] @relation("notificationCreator") // notifications triggered by a user
+}
+
+model Event {
+  id          String   @id @default(cuid()) // Unique identifier
+  organizerId String
+  name        String // Name of the event
+  description String? // Optional description of the event
+  location    String? // Optional location of the event
+  startDate   DateTime // Start date and time
+  endDate     DateTime // End date and time
+  isOnline    Boolean  @default(false) // Indicator for online or in-person
+  capacity    Int? // Maximum number of participants
+  price       Float? // Ticket price (if applicable)
+  createdAt   DateTime @default(now()) // Record creation timestamp
+  updatedAt   DateTime @updatedAt // Automatically updated on record change
+
+  // Relations
+  organizer User   @relation("OrganizedEvents", fields: [organizerId], references: [id]) // Organizer of the event
+  attendees User[] @relation("AttendedEvents") // Users attending this event
 }
 
 model Post {
