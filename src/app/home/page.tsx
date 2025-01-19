@@ -1,5 +1,8 @@
+import { getDbUser } from '@/actions/user.action';
+import CreatePost from '@/components/CreatePost';
 import EventSmallCard from '@/components/EventSmallCard';
-import { Button, buttonVariants } from '@/components/ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { buttonVariants } from '@/components/ui/button';
 import {
   Card,
   CardContent,
@@ -7,10 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Textarea } from '@/components/ui/textarea';
 import UserSmallCard from '@/components/UserSmallCard';
-import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
-import Image from 'next/image';
 import Link from 'next/link';
 import { MdEventNote } from 'react-icons/md';
 
@@ -144,13 +144,12 @@ let users = [
 ];
 
 export default async function page() {
-  const { getUser } = getKindeServerSession();
-  const user = await getUser();
-
+  const user = await getDbUser();
   events = events.slice(0, 4);
   users = users.slice(0, 3);
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      {/* left */}
       <div className="hidden lg:block lg:col-span-3">
         <div className="sticky top-28 h-[532px]">
           <Card>
@@ -176,19 +175,17 @@ export default async function page() {
           </Card>
         </div>
       </div>
+
+      {/* center */}
       <div className="lg:col-span-6 flex flex-col items-center justify-center mt-10">
-        <Card className="flex flex-col items-center justify-center gap-4 p-4 w-full ">
-          <Textarea
-            className="w-full h-full p-4 bg-card-foreground rounded-lg resize-none text-neutral-300"
-            rows={4}
-            placeholder="Whats on your mind?"
-          />
-          <div className="w-full flex justify-end">
-            <Button>Post</Button>
-          </div>
-        </Card>
+        {/* create post */}
+        <CreatePost />
+
+        {/* show posts */}
         <div className="pb-[1000px]"></div>
       </div>
+
+      {/* right */}
       <div className="hidden lg:block lg:col-span-3">
         <div className="sticky top-28 h-[532px]">
           <div className="h-full w-full flex flex-col items-center space-y-6">
@@ -196,8 +193,7 @@ export default async function page() {
               {/* Welcome Header */}
               <CardHeader className="rounded-t-md py-3 bg-gradient-to-tr from-primary to-amber-500 text-white">
                 <h2 className="text-lg font-bold">
-                  Welcome Back,{' '}
-                  {user.username ? user.username : user.given_name}!
+                  Welcome Back, @{user?.username}!
                 </h2>
                 <p className="text-sm text-blue-200">
                   Let&apos;s make today memorable.
@@ -207,17 +203,17 @@ export default async function page() {
               {/* Profile Action */}
               <CardContent className="flex items-center justify-between px-3 py-5 overflow-hidden">
                 <div className="flex items-center space-x-2">
-                  <div className="relative size-10 rounded-full overflow-hidden">
-                    <Image
-                      src={user.picture as string}
-                      alt="User Avatar"
-                      className="object-contain"
-                      fill={true}
-                    />
-                  </div>
+                  <Avatar>
+                    <AvatarImage src={user?.image as string} />
+                    <AvatarFallback className="uppercase bg-primary w-full text-neutral-300 font-bold">
+                      {user?.name?.[0] ||
+                        user?.username?.[0] ||
+                        user?.email?.[0]}
+                    </AvatarFallback>
+                  </Avatar>
 
                   <p className="text-sm text-neutral-300 font-medium">
-                    {user.given_name}
+                    {user?.name}
                   </p>
                 </div>
                 <Link

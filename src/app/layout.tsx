@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import TopNavbar from '@/components/TopNavbar';
 import BottomNavbar from '@/components/BottomNavbar';
+import { Toaster } from 'react-hot-toast';
 import { roboto } from '@/lib/fonts';
 
 export const metadata: Metadata = {
@@ -22,6 +23,8 @@ export default function RootLayout({
         <BottomNavbar />
 
         <main className="max-w-7xl mx-auto px-4 container relative">
+          <Toaster position="top-center" />
+
           {children}
         </main>
       </body>

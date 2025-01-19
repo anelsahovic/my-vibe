@@ -31,7 +31,7 @@ export async function GET() {
     await prisma.user.create({
       data: {
         kindeId: user.id,
-        name: user.given_name || '',
+        name: `${user?.given_name ?? ''} ${user?.family_name ?? ''}`.trim(),
         username: user.username ?? user.email?.split('@')[0] ?? '',
         email: user.email ?? '',
         image: user.picture ?? '',

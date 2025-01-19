@@ -12,3 +12,17 @@ export type UserSmallCardType = {
   username: string;
   image?: string;
 };
+
+export type UserDb = {
+  id: string;
+  kindeId: string;
+  email: string;
+  username: string;
+  name: string | null;
+  image: string | null;
+  bio: string | null;
+  location: string | null;
+  website: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+};
