@@ -1,8 +1,7 @@
 import { UserSmallCardType } from '@/lib/types';
-import React from 'react';
 import { Card } from './ui/card';
 import Image from 'next/image';
-import { Button } from './ui/button';
+import FollowButton from './FollowButton';
 
 type Props = {
   user: UserSmallCardType;
@@ -22,16 +21,19 @@ export default function UserSmallCard({ user }: Props) {
           />
         </div>
         <div className="flex flex-col items-start justify-start truncate">
-          <h2 className="text-base font-medium text-neutral-300 ">
+          <h2 className="text-base font-medium text-neutral-300 -mb-1">
             {user.name}
           </h2>
           <p className="text-sm text-neutral-400">@{user.username}</p>
+          <p className="text-xs text-neutral-500">
+            {user._count.followers} followers
+          </p>
         </div>
       </div>
 
       {/* right - follow button */}
       <div>
-        <Button>Follow</Button>
+        <FollowButton userId={user.id} />
       </div>
     </Card>
   );

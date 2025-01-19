@@ -8,9 +8,12 @@ export type EventSmallCardType = {
 
 export type UserSmallCardType = {
   id: string;
-  name: string;
+  image: string | null;
+  name: string | null;
   username: string;
-  image?: string;
+  _count: {
+    followers: number;
+  };
 };
 
 export type UserDb = {

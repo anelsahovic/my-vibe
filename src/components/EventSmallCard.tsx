@@ -42,7 +42,10 @@ export default function EventSmallCard({ event }: Props) {
           <div className="flex flex-col items-center text-xs text-neutral-300">
             <Badge>
               {calculateDaysUntilStart(event.startDate.toLocaleDateString())}{' '}
-              days left
+              {calculateDaysUntilStart(event.startDate.toLocaleDateString()) > 1
+                ? 'days'
+                : 'day'}{' '}
+              left
             </Badge>
           </div>
         </div>

@@ -1,4 +1,4 @@
-import { getDbUser } from '@/actions/user.action';
+import { getDbUser, getRandomUsers } from '@/actions/user.action';
 import CreatePost from '@/components/CreatePost';
 import EventSmallCard from '@/components/EventSmallCard';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -110,43 +110,44 @@ let events = [
   },
 ];
 
-let users = [
-  {
-    id: 'u1',
-    name: 'John Doe',
-    username: 'johndoe',
-    image: '',
-  },
-  {
-    id: 'u2',
-    name: 'Brus Willis',
-    username: 'bruswillis',
-    image: '',
-  },
-  {
-    id: 'u3',
-    name: 'Marie Smith',
-    username: 'mariesmith',
-    image: '',
-  },
-  {
-    id: 'u4',
-    name: 'Jack Sparrow',
-    username: 'jacksparrow',
-    image: '',
-  },
-  {
-    id: 'u5',
-    name: 'Mona Gonzales',
-    username: 'monagonzales',
-    image: '',
-  },
-];
+// let users = [
+//   {
+//     id: 'u1',
+//     name: 'John Doe',
+//     username: 'johndoe',
+//     image: '',
+//   },
+//   {
+//     id: 'u2',
+//     name: 'Brus Willis',
+//     username: 'bruswillis',
+//     image: '',
+//   },
+//   {
+//     id: 'u3',
+//     name: 'Marie Smith',
+//     username: 'mariesmith',
+//     image: '',
+//   },
+//   {
+//     id: 'u4',
+//     name: 'Jack Sparrow',
+//     username: 'jacksparrow',
+//     image: '',
+//   },
+//   {
+//     id: 'u5',
+//     name: 'Mona Gonzales',
+//     username: 'monagonzales',
+//     image: '',
+//   },
+// ];
 
 export default async function page() {
   const user = await getDbUser();
+  const users = await getRandomUsers();
+
   events = events.slice(0, 4);
-  users = users.slice(0, 3);
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
       {/* left */}
@@ -189,6 +190,7 @@ export default async function page() {
       <div className="hidden lg:block lg:col-span-3">
         <div className="sticky top-28 h-[532px]">
           <div className="h-full w-full flex flex-col items-center space-y-6">
+            {/* Welcome back */}
             <Card className="h-1/3 w-full flex flex-col justify-between">
               {/* Welcome Header */}
               <CardHeader className="rounded-t-md py-3 bg-gradient-to-tr from-primary to-amber-500 text-white">
@@ -218,13 +220,17 @@ export default async function page() {
                 </div>
                 <Link
                   href=""
-                  className={buttonVariants({ variant: 'secondary' })}
+                  className={buttonVariants({
+                    variant: 'secondary',
+                    size: 'sm',
+                  })}
                 >
                   View Profile
                 </Link>
               </CardContent>
             </Card>
 
+            {/* Who to follow */}
             <Card className="h-2/3 w-full">
               <CardHeader className="flex flex-col items-center justify-center">
                 <CardTitle className="text-neutral-100">
@@ -233,9 +239,13 @@ export default async function page() {
                 <CardDescription>People you might know</CardDescription>
               </CardHeader>
               <CardContent className="flex flex-col items-center justify-center space-y-4 px-3">
-                {users.map((user) => (
-                  <UserSmallCard key={user.id} user={user} />
-                ))}
+                {users.length ? (
+                  users.map((user) => (
+                    <UserSmallCard key={user.id} user={user} />
+                  ))
+                ) : (
+                  <p>No suggested users</p>
+                )}
               </CardContent>
             </Card>
           </div>
