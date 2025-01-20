@@ -1,5 +1,4 @@
 import { EventSmallCardType } from '@/lib/types';
-import React from 'react';
 import { Card } from './ui/card';
 import { IoLocationSharp } from 'react-icons/io5';
 import { Badge } from './ui/badge';
@@ -41,11 +40,7 @@ export default function EventSmallCard({ event }: Props) {
           {/* days left */}
           <div className="flex flex-col items-center text-xs text-neutral-300">
             <Badge>
-              {calculateDaysUntilStart(event.startDate.toLocaleDateString())}{' '}
-              {calculateDaysUntilStart(event.startDate.toLocaleDateString()) > 1
-                ? 'days'
-                : 'day'}{' '}
-              left
+              {calculateDaysUntilStart(event.startDate.toLocaleDateString())}
             </Badge>
           </div>
         </div>

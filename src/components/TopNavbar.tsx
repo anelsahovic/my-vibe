@@ -141,7 +141,7 @@ export default function TopNavbar() {
           {/* profile dropdown */}
           <div className="hidden md:flex">
             {/* profile menu*/}
-            <DropdownMenu>
+            <DropdownMenu modal={false}>
               <DropdownMenuTrigger>
                 <FaUserCircle className="size-5" />
               </DropdownMenuTrigger>

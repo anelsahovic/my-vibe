@@ -1,6 +1,8 @@
+import { getPosts } from '@/actions/post.actions';
 import { getDbUser, getRandomUsers } from '@/actions/user.action';
 import CreatePost from '@/components/CreatePost';
 import EventSmallCard from '@/components/EventSmallCard';
+import PostCard from '@/components/PostCard';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { buttonVariants } from '@/components/ui/button';
 import {
@@ -11,6 +13,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import UserSmallCard from '@/components/UserSmallCard';
+import { Post } from '@/lib/types';
 import Link from 'next/link';
 import { MdEventNote } from 'react-icons/md';
 
@@ -146,6 +149,7 @@ let events = [
 export default async function page() {
   const user = await getDbUser();
   const users = await getRandomUsers();
+  const posts: Post[] = await getPosts();
 
   events = events.slice(0, 4);
   return (
@@ -179,11 +183,17 @@ export default async function page() {
 
       {/* center */}
       <div className="lg:col-span-6 flex flex-col items-center justify-center mt-10">
-        {/* create post */}
-        <CreatePost />
+        <div className="w-full flex flex-col items-center space-y-10">
+          {/* create post */}
+          <CreatePost />
 
-        {/* show posts */}
-        <div className="pb-[1000px]"></div>
+          {/* show posts */}
+          <div className="flex flex-col items-center w-full space-y-6">
+            {posts.map((post: Post) => (
+              <PostCard key={post.id} post={post} user={user} />
+            ))}
+          </div>
+        </div>
       </div>
 
       {/* right */}
