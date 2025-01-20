@@ -172,7 +172,7 @@ export default async function page() {
                 Don&apos;t miss out on newest events
               </CardDescription>
             </CardHeader>
-            <CardContent className="flex flex-col items-center justify-center space-y-2 px-3">
+            <CardContent className="flex flex-col items-center justify-center space-y-4 px-3">
               {events.map((event) => (
                 <EventSmallCard key={event.id} event={event} />
               ))}

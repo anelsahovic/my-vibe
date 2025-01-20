@@ -45,7 +45,7 @@ body {
   }
 
   .container {
-    @apply mt-14 md:mt-[72px];
+    @apply mt-14 md:mt-[72px] mb-16;
   }
 }
 

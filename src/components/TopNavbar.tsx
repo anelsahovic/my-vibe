@@ -25,6 +25,9 @@ import {
 } from './ui/dropdown-menu';
 import { LogoutLink } from '@kinde-oss/kinde-auth-nextjs/components';
 import SearchInput from './SearchInput';
+import { useEffect, useState } from 'react';
+import { Notification } from '@/lib/types';
+import { getNotifications } from '@/actions/notification.action';
 
 export const navItems = [
   {
@@ -61,16 +64,38 @@ export const navItems = [
 
 export default function TopNavbar() {
   const urlPath = usePathname();
+  if (urlPath === '/') {
+    return;
+  }
+
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        const data = await getNotifications(urlPath);
+        setNotifications(data);
+      } catch (error) {
+        console.error('Error fetching notifications', error);
+      }
+    };
+
+    fetchNotifications();
+  }, [urlPath]);
+
   const newNavItem = navItems.find((item) => item.title === 'New');
   // hide on landing page
-  if (urlPath === '/') {
-    return <></>;
-  }
+
   return (
     <div className="fixed top-0 h-14 w-full md:px-4 md:top-4 flex items-center justify-center z-50 ">
       <div className="flex items-center justify-between w-full h-full md:rounded-lg bg-card shadow-lg max-w-7xl mx-auto px-4">
         {/* logo */}
-        <div className="flex items-center justify-center space-x-2 pl-4 md:pl-2">
+        <Link
+          href="/home"
+          className="flex items-center justify-center space-x-2 pl-4 md:pl-2"
+        >
           <Image
             src="/logo.png"
             alt="My Vibe Logo"
@@ -83,7 +108,7 @@ export default function TopNavbar() {
           >
             my vibe
           </span>
-        </div>
+        </Link>
 
         {/* search input */}
         <div className=" hidden  lg:flex items-center md:max-w-xs lg:max-w-sm w-full ">
@@ -121,11 +146,20 @@ export default function TopNavbar() {
                   urlPath === item.href && 'border-b-2 border-primary'
                 }`}
               >
-                {urlPath === item.href ? (
-                  <item.iconSelected className="size-5 lg:size-6 text-primary" />
-                ) : (
-                  <item.iconDefault className="size-5 lg:size-6" />
-                )}
+                <div className="relative">
+                  {urlPath === item.href ? (
+                    <item.iconSelected className="size-5 lg:size-6 text-primary" />
+                  ) : (
+                    <item.iconDefault className="size-5 lg:size-6" />
+                  )}
+                  {item.href === '/notifications' &&
+                    notifications.filter((n) => !n.read).length > 0 && (
+                      <span className="absolute flex items-center justify-center top-0 left-0 -translate-x-1 -translate-y-1 size-3.5 lg:size-4 rounded-full bg-amber-500 text-background text-[10px] lg:text-xs font-semibold">
+                        {notifications.filter((n) => !n.read).length}
+                      </span>
+                    )}
+                </div>
+
                 <span
                   className={`hidden lg:block text-base text-neutral-100 ${
                     urlPath === item.href &&

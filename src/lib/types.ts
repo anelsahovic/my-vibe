@@ -1,3 +1,5 @@
+import { getNotifications } from '@/actions/notification.action';
+
 export type EventSmallCardType = {
   id: string;
   name: string;
@@ -68,3 +70,6 @@ export type Post = {
     comments: number;
   };
 };
+
+export type Notifications = Awaited<ReturnType<typeof getNotifications>>;
+export type Notification = Notifications[number];

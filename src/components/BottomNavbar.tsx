@@ -17,15 +17,35 @@ import Image from 'next/image';
 import { cherryBombOne } from '@/lib/fonts';
 import { LogoutLink } from '@kinde-oss/kinde-auth-nextjs/components';
 import { Button } from './ui/button';
+import { useEffect, useState } from 'react';
+import { getNotifications } from '@/actions/notification.action';
+import { Notification } from '@/lib/types';
 
 export default function BottomNavbar() {
   const urlPath = usePathname();
-  const bottomNavItems = navItems.filter((item) => item.title !== 'New');
-
-  // hide on landing page
   if (urlPath === '/') {
-    return <></>;
+    return;
   }
+
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        const data = await getNotifications(urlPath);
+        setNotifications(data);
+      } catch (error) {
+        console.error('Error fetching notifications', error);
+      }
+    };
+
+    fetchNotifications();
+  }, [urlPath]);
+
+  const bottomNavItems = navItems.filter((item) => item.title !== 'New');
+  // hide on landing page
 
   return (
     <div className="md:hidden fixed bottom-0 h-14 w-full bg-card flex items-center z-50">
@@ -37,11 +57,19 @@ export default function BottomNavbar() {
             href={item.href}
             className="flex items-center space-x-2"
           >
-            {urlPath === item.href ? (
-              <item.iconSelected className="size-6 text-primary" />
-            ) : (
-              <item.iconDefault className="size-6" />
-            )}
+            <div className="relative">
+              {urlPath === item.href ? (
+                <item.iconSelected className="size-6 text-primary" />
+              ) : (
+                <item.iconDefault className="size-6" />
+              )}
+              {item.href === '/notifications' &&
+                notifications.filter((n) => !n.read).length > 0 && (
+                  <span className="absolute flex items-center justify-center top-0 left-0 -translate-x-1 -translate-y-1 size-3.5 lg:size-4 rounded-full bg-amber-500 text-background text-[10px] font-semibold">
+                    {notifications.filter((n) => !n.read).length}
+                  </span>
+                )}
+            </div>
             <span className="hidden lg:block text-base text-neutral-100">
               {item.title}
             </span>
@@ -83,11 +111,19 @@ export default function BottomNavbar() {
                     href={item.href}
                     className={`flex items-center justify-center px-1 space-x-1`}
                   >
-                    {urlPath === item.href ? (
-                      <item.iconSelected className="size-6 text-primary" />
-                    ) : (
-                      <item.iconDefault className="size-6" />
-                    )}
+                    <div className="relative">
+                      {urlPath === item.href ? (
+                        <item.iconSelected className="size-6 text-primary" />
+                      ) : (
+                        <item.iconDefault className="size-6" />
+                      )}
+                      {item.href === '/notifications' &&
+                        notifications.filter((n) => !n.read).length > 0 && (
+                          <span className="absolute flex items-center justify-center top-0 left-0 -translate-x-1 -translate-y-1 size-3.5 lg:size-4 rounded-full bg-amber-500 text-background text-[10px] font-semibold">
+                            {notifications.filter((n) => !n.read).length}
+                          </span>
+                        )}
+                    </div>
                     <span
                       className={` text-lg text-neutral-100 ${
                         urlPath === item.href &&
