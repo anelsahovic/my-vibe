@@ -1,6 +1,8 @@
 'use server';
 
 import prisma from '@/lib/prisma';
+import { userSchema } from '@/lib/zodSchemas';
+import { parseWithZod } from '@conform-to/zod';
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 import { revalidatePath } from 'next/cache';
 
@@ -104,6 +106,7 @@ export async function toggleFollow(userId: string) {
           },
         },
       });
+      revalidatePath('/home');
     } else {
       // follow
       await prisma.$transaction([
@@ -128,5 +131,41 @@ export async function toggleFollow(userId: string) {
   } catch (error) {
     console.error(error);
     return { success: false, error: 'Error following user' };
+  }
+}
+
+export async function updateUser(prevState: unknown, formData: FormData) {
+  const user = await getDbUser();
+
+  if (!user) throw new Error('Unauthorized');
+
+  const submission = parseWithZod(formData, { schema: userSchema });
+
+  if (submission.status !== 'success') {
+    return submission.reply();
+  }
+
+  try {
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        name: submission.value.name,
+        username: submission.value.username,
+        email: submission.value.email,
+        bio: submission.value.bio,
+        location: submission.value.location,
+        website: submission.value.website,
+      },
+    });
+
+    revalidatePath('/profile');
+    return { status: 'success' as const };
+  } catch (error) {
+    return {
+      status: 'error' as const,
+      error: {
+        error: error,
+      } as Record<string, string[] | null>,
+    };
   }
 }

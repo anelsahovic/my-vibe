@@ -180,7 +180,10 @@ export default function PostCard({ post, user }: Props) {
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem>
-                      <Link href="#" className="w-full h-full">
+                      <Link
+                        href={`/profile/${post.author.username}`}
+                        className="w-full h-full"
+                      >
                         See User
                       </Link>
                     </DropdownMenuItem>
