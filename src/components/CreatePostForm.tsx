@@ -14,6 +14,7 @@ import { createPost } from '@/actions/post.actions';
 import { useForm } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
 import { postSchema } from '@/lib/zodSchemas';
+import ImageUpload from './ImageUpload';
 
 type Props = {
   user: UserDb;
@@ -22,7 +23,8 @@ type Props = {
 export default function CreatePostForm({ user }: Props) {
   const [postContent, setPostContent] = useState<string>('');
   const [wordsCount, setWordsCount] = useState(0);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [imageUrl, setImageUrl] = useState('');
+  const [showImageUpload, setShowImageUpload] = useState(false);
   const [isPosting, setIsPosting] = useState(false);
   const maxContentLength: number = 256;
 
@@ -58,6 +60,9 @@ export default function CreatePostForm({ user }: Props) {
       });
 
       setPostContent('');
+      setShowImageUpload(false);
+      setIsPosting(false);
+      setImageUrl('');
     }
   }, [lastResult]);
 
@@ -70,6 +75,12 @@ export default function CreatePostForm({ user }: Props) {
         noValidate
         className="flex flex-col gap-4 w-full"
       >
+        <input
+          type="hidden"
+          value={imageUrl}
+          name={fields.image.name}
+          key={fields.image.key}
+        />
         <div className="relative  w-full">
           <Avatar className="absolute top-2 left-2">
             <AvatarImage src={user.image as string} />
@@ -96,20 +107,42 @@ export default function CreatePostForm({ user }: Props) {
           </div>
         </div>
 
-        <div className="w-full flex justify-between">
-          <div>
-            <Button
-              type="button"
-              variant="ghost"
-              className="text-muted-foreground hover:text-primary "
-              disabled={isPosting}
-            >
-              <IoImageOutline />
-              Image
-            </Button>
-          </div>
-          <div>
-            <SubmitButton disabled={!postContent} text="Post" icon={FiSend} />
+        <div className="w-full flex flex-col gap-4">
+          {/* image upload */}
+
+          {(showImageUpload || imageUrl) && (
+            <div className="border rounded-lg p-4">
+              <ImageUpload
+                endpoint="postImage"
+                value={imageUrl}
+                onChange={(url) => {
+                  setImageUrl(url);
+                  if (!url) setShowImageUpload(false);
+                }}
+              />
+            </div>
+          )}
+
+          <div className="flex items-center justify-between w-full">
+            <div>
+              <Button
+                type="button"
+                variant="ghost"
+                className="text-muted-foreground hover:text-primary "
+                onClick={() => setShowImageUpload(!showImageUpload)}
+                disabled={isPosting}
+              >
+                <IoImageOutline />
+                Image
+              </Button>
+            </div>
+            <div>
+              <SubmitButton
+                disabled={(!postContent && !imageUrl) || isPosting}
+                text="Post"
+                icon={FiSend}
+              />
+            </div>
           </div>
         </div>
       </form>

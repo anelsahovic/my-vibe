@@ -212,14 +212,13 @@ export default function PostCard({ post, user }: Props) {
           {/* POST IMAGE */}
           {post.image && (
             <div className="rounded-lg overflow-hidden">
-              <div className="w-full h-full">
-                <Image
-                  src={post.image}
-                  alt="Post content"
-                  fill={true}
-                  className="w-full h-auto object-cover"
-                />
-              </div>
+              <Image
+                src={post.image}
+                alt="Post content"
+                width={200}
+                height={200}
+                className="object-cover"
+              />
             </div>
           )}
 
