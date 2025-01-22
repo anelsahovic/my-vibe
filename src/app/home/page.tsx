@@ -229,7 +229,7 @@ export default async function page() {
                   </p>
                 </div>
                 <Link
-                  href=""
+                  href={`/profile/${user.username}`}
                   className={buttonVariants({
                     variant: 'secondary',
                     size: 'sm',
@@ -251,7 +251,7 @@ export default async function page() {
               <CardContent className="flex flex-col items-center justify-center space-y-4 px-3">
                 {users.length ? (
                   users.map((user) => (
-                    <UserSmallCard key={user.id} user={user} />
+                    <UserSmallCard key={user.id} user={user} btnSize="sm" />
                   ))
                 ) : (
                   <p>No suggested users</p>

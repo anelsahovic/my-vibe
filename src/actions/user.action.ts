@@ -134,6 +134,40 @@ export async function toggleFollow(userId: string) {
   }
 }
 
+export async function removeUser(userId: string) {
+  try {
+    const authUserId = await getDbUserId();
+
+    if (authUserId === userId) throw new Error('You cannot unfollow yourself');
+
+    const existingFollow = await prisma.follows.findUnique({
+      where: {
+        followerId_followingId: {
+          followerId: userId,
+          followingId: authUserId,
+        },
+      },
+    });
+
+    if (existingFollow) {
+      // unfollow
+      await prisma.follows.delete({
+        where: {
+          followerId_followingId: {
+            followerId: userId,
+            followingId: authUserId,
+          },
+        },
+      });
+      revalidatePath('/friends');
+      return { success: true };
+    } else return { success: false, error: 'This user is not following you.' };
+  } catch (error) {
+    console.error(error);
+    return { success: false, error: 'Error removing follower' };
+  }
+}
+
 export async function updateUser(prevState: unknown, formData: FormData) {
   const user = await getDbUser();
 
@@ -167,5 +201,88 @@ export async function updateUser(prevState: unknown, formData: FormData) {
         error: error,
       } as Record<string, string[] | null>,
     };
+  }
+}
+
+export async function getUserFollowers() {
+  try {
+    const userId = await getDbUserId();
+
+    const followers = await prisma.follows.findMany({
+      where: {
+        followingId: userId,
+      },
+      include: {
+        follower: {
+          select: {
+            id: true,
+            name: true,
+            username: true,
+            image: true,
+            _count: {
+              select: {
+                followers: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    const formattedFollowers = followers.map((follow) => ({
+      id: follow.follower.id,
+      username: follow.follower.username,
+      name: follow.follower.name,
+      image: follow.follower.image,
+      _count: {
+        followers: follow.follower._count?.followers || 0,
+      },
+    }));
+    return formattedFollowers;
+  } catch (error) {
+    console.error('Error fetching random users', error);
+    return [];
+  }
+}
+
+export async function getUserFollowing() {
+  try {
+    const userId = await getDbUserId();
+
+    const following = await prisma.follows.findMany({
+      where: {
+        followerId: userId,
+      },
+      include: {
+        following: {
+          select: {
+            id: true,
+            username: true,
+            name: true,
+            image: true,
+            _count: {
+              select: {
+                followers: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    const formattedFollowing = following.map((follow) => ({
+      id: follow.following.id,
+      username: follow.following.username,
+      name: follow.following.name,
+      image: follow.following.image,
+      _count: {
+        followers: follow.following._count?.followers || 0,
+      },
+    }));
+
+    return formattedFollowing;
+  } catch (error) {
+    console.error('Error fetching random users', error);
+    return [];
   }
 }

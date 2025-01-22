@@ -7,9 +7,18 @@ import { toggleFollow } from '@/actions/user.action';
 
 type Props = {
   userId: string;
+  text: string;
+  size?: 'sm' | 'default' | 'lg' | 'icon';
+  variant?:
+    | 'default'
+    | 'destructive'
+    | 'outline'
+    | 'secondary'
+    | 'ghost'
+    | 'link';
 };
 
-export default function FollowButton({ userId }: Props) {
+export default function FollowButton({ userId, size, variant, text }: Props) {
   const [isLoading, setLoading] = useState(false);
 
   const handleFollow = async () => {
@@ -24,8 +33,13 @@ export default function FollowButton({ userId }: Props) {
     }
   };
   return (
-    <Button size="sm" onClick={handleFollow} disabled={isLoading}>
-      {isLoading ? <Loader2 className="size-4 animate-spin" /> : 'Follow'}
+    <Button
+      size={size}
+      variant={variant}
+      onClick={handleFollow}
+      disabled={isLoading}
+    >
+      {isLoading ? <Loader2 className="size-4 animate-spin" /> : text}
     </Button>
   );
 }

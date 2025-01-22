@@ -97,34 +97,6 @@ export async function getUserPosts(userId: string) {
   }
 }
 
-// export async function updateProfile(formData: FormData) {
-//   try {
-//     const { userId: clerkId } = await auth();
-//     if (!clerkId) throw new Error("Unauthorized");
-
-//     const name = formData.get("name") as string;
-//     const bio = formData.get("bio") as string;
-//     const location = formData.get("location") as string;
-//     const website = formData.get("website") as string;
-
-//     const user = await prisma.user.update({
-//       where: { clerkId },
-//       data: {
-//         name,
-//         bio,
-//         location,
-//         website,
-//       },
-//     });
-
-//     revalidatePath("/profile");
-//     return { success: true, user };
-//   } catch (error) {
-//     console.error("Error updating profile:", error);
-//     return { success: false, error: "Failed to update profile" };
-//   }
-// }
-
 export async function isFollowing(userId: string) {
   try {
     const currentUserId = await getDbUserId();
@@ -142,6 +114,27 @@ export async function isFollowing(userId: string) {
     return !!follow;
   } catch (error) {
     console.error('Error checking follow status:', error);
+    return false;
+  }
+}
+
+export async function isFollowedBy(userId: string) {
+  try {
+    const currentUserId = await getDbUserId();
+    if (!currentUserId) return false;
+
+    const follow = await prisma.follows.findUnique({
+      where: {
+        followerId_followingId: {
+          followerId: userId, // Check if this user is following
+          followingId: currentUserId, // the currently logged-in user
+        },
+      },
+    });
+
+    return !!follow;
+  } catch (error) {
+    console.error('Error checking if user is followed:', error);
     return false;
   }
 }
