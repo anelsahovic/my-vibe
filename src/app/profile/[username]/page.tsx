@@ -1,3 +1,4 @@
+import { getEvents } from '@/actions/event.action';
 import {
   getProfileByUsername,
   getUserPosts,
@@ -30,17 +31,18 @@ export default async function ProfileRoute({ params }: Props) {
 
   if (!user) notFound();
 
-  const [posts, isCurrentUserFollowing] = await Promise.all([
-    getUserPosts(user.id),
-    // getUserEvents(user.id),
-    isFollowing(user.id),
-  ]);
+  const posts = await getUserPosts(user.id);
+  let events = await getEvents();
+  const isCurrentUserFollowing = await isFollowing(user.id);
+
+  if (!events) events = [];
 
   return (
     <ProfilePage
       userDb={user}
       userAuth={userAuth}
       posts={posts}
+      events={events}
       isFollowing={isCurrentUserFollowing}
     />
   );

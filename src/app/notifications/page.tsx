@@ -17,6 +17,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
+import { MdEventNote } from 'react-icons/md';
 
 const getNotificationIcon = (type: string) => {
   switch (type) {
@@ -26,8 +27,24 @@ const getNotificationIcon = (type: string) => {
       return <MessageCircleIcon className="size-4 text-amber-500" />;
     case 'FOLLOW':
       return <UserPlusIcon className="size-4 text-green-500" />;
+    case 'EVENT':
+      return <MdEventNote className="size-4 text-sky-500" />;
     default:
       return null;
+  }
+};
+const getNotificationText = (type: string) => {
+  switch (type) {
+    case 'LIKE':
+      return <p>started following you</p>;
+    case 'COMMENT':
+      return <p>liked your post</p>;
+    case 'FOLLOW':
+      return <p>commented on your post</p>;
+    case 'EVENT':
+      return <p>is attending your event</p>;
+    default:
+      return <p>N/A</p>;
   }
 };
 
@@ -144,11 +161,7 @@ export default function NotificationsPage() {
                               notification.creator.username}
                           </span>
                         </Link>{' '}
-                        {notification.type === 'FOLLOW'
-                          ? 'started following you'
-                          : notification.type === 'LIKE'
-                          ? 'liked your post'
-                          : 'commented on your post'}
+                        {getNotificationText(notification.type)}
                       </span>
                     </div>
 
@@ -180,6 +193,16 @@ export default function NotificationsPage() {
                             )}
                         </div>
                       )}
+
+                    {notification.eventId && (
+                      <div className="pl-6 space-y-2">
+                        <div className="text-sm text-muted-foreground rounded-md p-2 bg-muted/30 mt-2">
+                          <Link href={`/events/${notification.eventId}`}>
+                            <p>{notification.event?.name}</p>
+                          </Link>
+                        </div>
+                      </div>
+                    )}
 
                     <p className="text-sm text-muted-foreground pl-6">
                       {formatDistanceToNow(new Date(notification.createdAt), {

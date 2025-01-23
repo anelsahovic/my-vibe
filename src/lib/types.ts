@@ -8,6 +8,18 @@ export type EventSmallCardType = {
   price: number;
 };
 
+export type EventMediumCardType = {
+  id: string;
+  name: string;
+  description: string | null;
+  location: string | null;
+  startDate: Date;
+  endDate: Date;
+  isOnline: boolean;
+  capacity: number | null;
+  price: number | null;
+};
+
 export type UserSmallCardType = {
   id: string;
   image: string | null;

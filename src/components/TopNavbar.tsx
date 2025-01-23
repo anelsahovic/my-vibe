@@ -1,15 +1,11 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 'use client';
 
 import { cherryBombOne } from '@/lib/fonts';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import {
-  IoCalendarClearOutline,
-  IoCalendarClearSharp,
-  IoCreate,
-  IoCreateOutline,
-} from 'react-icons/io5';
+import { IoCalendarClearOutline, IoCalendarClearSharp } from 'react-icons/io5';
 
 import { FaUserCircle } from 'react-icons/fa';
 import { GoHome, GoHomeFill } from 'react-icons/go';
@@ -26,8 +22,10 @@ import {
 import { LogoutLink } from '@kinde-oss/kinde-auth-nextjs/components';
 import SearchInput from './SearchInput';
 import { useEffect, useState } from 'react';
-import { Notification } from '@/lib/types';
+import { Notification, UserDb } from '@/lib/types';
 import { getNotifications } from '@/actions/notification.action';
+import { getDbUser } from '@/actions/user.action';
+import CreatePostDialog from './CreatePostDialog';
 
 export const navItems = [
   {
@@ -35,12 +33,6 @@ export const navItems = [
     href: '/home',
     iconDefault: GoHome,
     iconSelected: GoHomeFill,
-  },
-  {
-    title: 'New',
-    href: '/create',
-    iconDefault: IoCreateOutline,
-    iconSelected: IoCreate,
   },
   {
     title: 'Events',
@@ -68,10 +60,9 @@ export default function TopNavbar() {
     return;
   }
 
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [user, setUser] = useState<UserDb>();
 
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
@@ -81,7 +72,16 @@ export default function TopNavbar() {
         console.error('Error fetching notifications', error);
       }
     };
+    const fetchUser = async () => {
+      try {
+        const user = await getDbUser();
+        setUser(user);
+      } catch (error) {
+        console.error('Error fetching notifications', error);
+      }
+    };
 
+    fetchUser();
     fetchNotifications();
   }, [urlPath]);
 
@@ -136,6 +136,10 @@ export default function TopNavbar() {
             </nav>
           </div>
 
+          <div className="lg:hidden">
+            <CreatePostDialog user={user as UserDb} />
+          </div>
+
           {/* large screen nav */}
           <nav className="hidden md:flex items-center justify-center lg:justify-end gap-4 h-full">
             {navItems.map((item) => (
@@ -183,15 +187,14 @@ export default function TopNavbar() {
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>
-                  <Link href="/profile" className="w-full h-full">
+                  <Link
+                    href={`/profile/${user?.username}`}
+                    className="w-full h-full"
+                  >
                     See Profile
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Link href="/profile/edit" className="w-full h-full">
-                    Edit Profile
-                  </Link>
-                </DropdownMenuItem>
+                <DropdownMenuItem></DropdownMenuItem>
 
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>

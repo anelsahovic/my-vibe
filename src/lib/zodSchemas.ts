@@ -27,3 +27,20 @@ export const userSchema = z.object({
     .optional(),
   website: z.string().url().optional(),
 });
+
+export const eventSchema = z.object({
+  name: z.string().min(2, 'Minimum name length is 2 characters'),
+  description: z
+    .string()
+    .max(400, 'Maximum description length is 400 characters')
+    .optional(),
+  location: z
+    .string()
+    .max(30, 'Max location length is 30 characters')
+    .optional(),
+  startDate: z.string(),
+  endDate: z.string(),
+  isOnline: z.boolean().optional(),
+  capacity: z.number().optional(),
+  price: z.number().optional(),
+});

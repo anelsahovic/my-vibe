@@ -27,19 +27,19 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  // Relations: 
-  organizedEvents Event[] @relation("OrganizedEvents") // Events organized by the user
-  attendedEvents  Event[] @relation("AttendedEvents") // Events the user is attending
+  // Relations
+  organizedEvents Event[]         @relation("OrganizedEvents") // Events organized by the user
+  attendedEvents  EventAttendee[] // Relationship with events through join table
 
   posts    Post[]
   comments Comment[]
   likes    Like[]
 
-  followers Follows[] @relation("following") // users who follow this user
-  following Follows[] @relation("follower") // users this user follows
+  followers Follows[] @relation("following") // Users who follow this user
+  following Follows[] @relation("follower") // Users this user follows
 
-  notifications        Notification[] @relation("userNotifications") // notifications received by a user
-  notificationsCreated Notification[] @relation("notificationCreator") // notifications triggered by a user
+  notifications        Notification[] @relation("userNotifications") // Notifications received by a user
+  notificationsCreated Notification[] @relation("notificationCreator") // Notifications triggered by a user
 }
 
 model Event {
@@ -57,8 +57,22 @@ model Event {
   updatedAt   DateTime @updatedAt // Automatically updated on record change
 
   // Relations
-  organizer User   @relation("OrganizedEvents", fields: [organizerId], references: [id]) // Organizer of the event
-  attendees User[] @relation("AttendedEvents") // Users attending this event
+  organizer    User            @relation("OrganizedEvents", fields: [organizerId], references: [id]) // Organizer of the event
+  attendees    EventAttendee[] // Relationship with attendees through join table
+  Notification Notification[]
+}
+
+model EventAttendee {
+  eventId   String
+  userId    String
+  createdAt DateTime @default(now()) // When the user joined the event
+
+  // Relations
+  event Event @relation(fields: [eventId], references: [id])
+  user  User  @relation(fields: [userId], references: [id])
+
+  @@id([eventId, userId])
+  @@index([eventId, userId])
 }
 
 model Post {
@@ -125,6 +139,7 @@ model Notification {
   type      NotificationType
   read      Boolean          @default(false)
   postId    String?
+  eventId   String?
   commentId String?
   createdAt DateTime         @default(now())
 
@@ -132,6 +147,7 @@ model Notification {
   user    User     @relation("userNotifications", fields: [userId], references: [id], onDelete: Cascade)
   creator User     @relation("notificationCreator", fields: [creatorId], references: [id], onDelete: Cascade)
   post    Post?    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  event   Event?   @relation(fields: [eventId], references: [id], onDelete: Cascade)
   comment Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
 
   @@index([userId, createdAt])
@@ -141,4 +157,5 @@ enum NotificationType {
   LIKE
   COMMENT
   FOLLOW
+  EVENT
 }

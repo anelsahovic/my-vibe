@@ -20,6 +20,7 @@ import { Button } from './ui/button';
 import { useEffect, useState } from 'react';
 import { getNotifications } from '@/actions/notification.action';
 import { Notification } from '@/lib/types';
+import { getDbUser } from '@/actions/user.action';
 
 export default function BottomNavbar() {
   const urlPath = usePathname();
@@ -29,6 +30,8 @@ export default function BottomNavbar() {
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const [username, setUsername] = useState('');
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
@@ -40,6 +43,17 @@ export default function BottomNavbar() {
         console.error('Error fetching notifications', error);
       }
     };
+
+    const fetchUser = async () => {
+      try {
+        const user = await getDbUser();
+        setUsername(user.username);
+      } catch (error) {
+        console.error('Error fetching notifications', error);
+      }
+    };
+
+    fetchUser();
 
     fetchNotifications();
   }, [urlPath]);
@@ -144,7 +158,7 @@ export default function BottomNavbar() {
 
                 <div className="flex flex-col items-center w-full space-y-4">
                   <Link
-                    href="/profile"
+                    href={`/profile/${username}`}
                     className="w-full text-center rounded-lg"
                   >
                     See Profile

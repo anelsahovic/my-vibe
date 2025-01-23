@@ -20,6 +20,13 @@ type DeleteAlertDialogProps = {
   title: string;
   description?: string;
   buttonText?: string;
+  variant?:
+    | 'default'
+    | 'destructive'
+    | 'outline'
+    | 'secondary'
+    | 'ghost'
+    | 'link';
 };
 
 export function DeleteAlertDialog({
@@ -28,12 +35,13 @@ export function DeleteAlertDialog({
   title = 'Delete Post',
   description = 'This action cannot be undone.',
   buttonText,
+  variant = 'ghost',
 }: DeleteAlertDialogProps) {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
         <Button
-          variant="ghost"
+          variant={variant}
           size="sm"
           className="flex items-center justify-start text-muted-foreground hover:text-red-500 w-full"
         >

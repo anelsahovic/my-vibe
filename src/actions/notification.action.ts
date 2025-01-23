@@ -1,7 +1,5 @@
 'use server';
 
-'use server';
-
 import prisma from '@/lib/prisma';
 import { getDbUserId } from './user.action';
 import { revalidatePath } from 'next/cache';
@@ -36,6 +34,12 @@ export async function getNotifications(pathToRevalidate?: string) {
             id: true,
             content: true,
             createdAt: true,
+          },
+        },
+        event: {
+          select: {
+            id: true,
+            name: true,
           },
         },
       },
