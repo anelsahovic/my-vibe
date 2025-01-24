@@ -1,36 +1,116 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<h1 align="center"> My Vibe - Social App </h1>
 
-## Getting Started
+![Demo App](/public/screenshot-for-readme.png)
 
-First, run the development server:
+# My Vibe
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+My Vibe is a modern social media app designed to help you connect with friends, discover events, and share your vibe with the world. Built with the latest web technologies, My Vibe focuses on user experience, performance, and scalability.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+🌐 **Live Demo**: [My Vibe on Vercel](https://anelsahovic-geo-world.vercel.app/)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## ✨ Features
 
-## Learn More
+### Core Features
 
-To learn more about Next.js, take a look at the following resources:
+- **User Authentication**: Powered by [Kinde](https://kinde.com) for secure and scalable auth.
+- **Dynamic User Profiles**: Edit profiles, manage followers, and view user-specific content.
+- **Social Interactions**:
+  - Follow/unfollow users.
+  - Like, comment, and delete posts.
+  - Notifications for post interactions, events, and more.
+- **Event Management**:
+  - Create, edit, and delete events.
+  - Track user attendance and send notifications.
+- **Image Uploads**: Upload and manage images in posts.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Enhanced UX
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Search Functionality**: Search for posts, events, and users.
+- **Notifications**: Stay updated with customizable notifications.
+- **Responsive Design**: Fully optimized for mobile and desktop using Tailwind CSS.
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🔧 Tech Stack
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Frontend
+
+- **Framework**: [Next.js 15](https://nextjs.org/) (with TypeScript)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+
+### Backend
+
+- **Database**: [Neon Database](https://neon.tech/) (PostgreSQL) with [Prisma ORM](https://www.prisma.io/)
+
+### Authentication
+
+- **Auth Provider**: [Kinde](https://kinde.com)
+
+### Deployment
+
+- **Platform**: [Vercel](https://vercel.com/)
+
+---
+
+## 📦 Dependencies
+
+### Key Dependencies
+
+- **Prisma**: Database management and ORM.
+- **Kinde Auth**: User authentication and session handling.
+- **UploadThing**: Image upload and management.
+- **Radix UI**: Accessible and customizable UI components.
+- **React Hot Toast**: Notifications.
+- **Date-fns**: Date manipulation and formatting.
+
+### Dev Dependencies
+
+- **TypeScript**: Type safety and developer experience.
+- **Tailwind CSS**: Modern utility-first CSS framework.
+- **Eslint**: Code quality and linting.
+
+---
+
+## ⚙️ Setup Instructions
+
+### Prerequisites
+
+- **Node.js** >= 18
+- **pnpm** (Preferred package manager)
+
+### Installation
+
+1. Clone the repository
+
+   ```bash
+   git clone https://github.com/anelsahovic/my-vibe.git
+   cd my-vibe
+   ```
+
+2. Install dependencies
+
+   ```bash
+   pnpm install
+   ```
+
+3. Set up environment variables
+   ```bash
+   KINDE_CLIENT_ID=<your_kinde_client_id>
+   KINDE_CLIENT_SECRET=<your_kinde_client_secret>
+   KINDE_ISSUER_URL=<your_kinde_issuer_url>
+   KINDE_SITE_URL=<your_kinde_site_url>
+   KINDE_POST_LOGOUT_REDIRECT_URL=<your_kinde_logout_redirect_url>
+   KINDE_POST_LOGIN_REDIRECT_URL=<your_kinde_login_redirect_url>
+   DATABASE_URL=<your_database_url>
+   UPLOADTHING_TOKEN=<your_uploadthing_token>
+   ```
+4. Set up the database
+   ```bash
+   pnpm prisma db push
+   ```
+
+## Author
+
+Developed by [Anel Sahovic](https://github.com/anelsahovic)
