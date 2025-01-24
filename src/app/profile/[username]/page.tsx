@@ -1,4 +1,4 @@
-import { getEvents } from '@/actions/event.action';
+import { getUserEvents } from '@/actions/event.action';
 import {
   getProfileByUsername,
   getUserPosts,
@@ -32,7 +32,7 @@ export default async function ProfileRoute({ params }: Props) {
   if (!user) notFound();
 
   const posts = await getUserPosts(user.id);
-  let events = await getEvents();
+  let events = await getUserEvents(user.id);
   const isCurrentUserFollowing = await isFollowing(user.id);
 
   if (!events) events = [];

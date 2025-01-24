@@ -14,6 +14,18 @@ export async function getEvents() {
   }
 }
 
+export async function getUserEvents(userId: string) {
+  try {
+    return await prisma.event.findMany({
+      where: {
+        organizerId: userId,
+      },
+    });
+  } catch (error) {
+    console.error('Error getting events', error);
+  }
+}
+
 export async function getEventById(eventId: string) {
   try {
     return prisma.event.findUnique({

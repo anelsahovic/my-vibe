@@ -3,9 +3,9 @@ import { getNotifications } from '@/actions/notification.action';
 export type EventSmallCardType = {
   id: string;
   name: string;
-  location: string;
+  location: string | null;
   startDate: Date;
-  price: number;
+  price: number | null;
 };
 
 export type EventMediumCardType = {

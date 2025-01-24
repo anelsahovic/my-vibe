@@ -1,6 +1,8 @@
 import { getEvents } from '@/actions/event.action';
 import EventForm from '@/components/EventForm';
 import EventMediumCard from '@/components/EventMediumCard';
+import SearchForm from '@/components/SearchForm';
+import SearchFormReset from '@/components/SearchFormReset';
 
 // const events = [
 //   {
@@ -98,7 +100,12 @@ import EventMediumCard from '@/components/EventMediumCard';
 //   },
 // ];
 
-export default async function EventsRoute() {
+type Props = {
+  searchParams: Promise<{ search: string }>;
+};
+
+export default async function EventsRoute({ searchParams }: Props) {
+  const { search } = await searchParams;
   const events = await getEvents();
 
   if (!events) {
@@ -108,17 +115,47 @@ export default async function EventsRoute() {
       </div>
     );
   }
+
+  const filteredEvents = events.filter(
+    (event) =>
+      search && event.name?.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const eventsToDisplay = search ? filteredEvents : events;
+
   return (
-    <div className="container py-10 flex flex-col gap-10">
-      <div className="flex justify-end w-full">
+    <div className="container py-10 flex flex-col justify-center items-center gap-10 mx-auto">
+      <div className="flex flex-col sm:flex-row items-center justify-between w-full gap-4">
+        <div className="sm:w-[500px] ">
+          <SearchForm page="/events" />
+        </div>
         <div>
           <EventForm />
         </div>
       </div>
+
+      <div className="w-full flex justify-center sm:justify-start">
+        {search ? (
+          <div className="flex items-center gap-2">
+            <p className="text-center">
+              Showing results for{'  '}
+              <span className="font-semibold">&quot;{search}&quot;</span>
+            </p>
+            <SearchFormReset page="/events" />
+          </div>
+        ) : (
+          <p className="text-center">Showing all events</p>
+        )}
+      </div>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {events.map((event) => (
-          <EventMediumCard key={event.id} event={event} />
-        ))}
+        {eventsToDisplay.length ? (
+          eventsToDisplay.map((event) => (
+            <EventMediumCard key={event.id} event={event} />
+          ))
+        ) : (
+          <p>No events found</p>
+        )}
       </div>
     </div>
   );

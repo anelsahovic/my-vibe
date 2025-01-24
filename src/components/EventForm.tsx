@@ -57,7 +57,7 @@ export default function EventForm() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="w-full mt-4">
+        <Button className="w-full">
           <FaRegCalendarPlus className="size-4 mr-2" />
           New Event
         </Button>

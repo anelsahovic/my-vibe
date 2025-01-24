@@ -1,15 +1,18 @@
-import { EventSmallCardType } from '@/lib/types';
 import { Card } from './ui/card';
 import { IoLocationSharp } from 'react-icons/io5';
 import { Badge } from './ui/badge';
 import Link from 'next/link';
 import { calculateDaysUntilStart } from '@/util/helperFunctions';
+import { EventSmallCardType } from '@/lib/types';
 
 type Props = {
   event: EventSmallCardType;
 };
 
 export default function EventSmallCard({ event }: Props) {
+  if (!event) {
+    return;
+  }
   return (
     <Link href={`/events/${event.id}`} className="w-full  hover:bg-primary">
       <Card className="flex flex-col items-start w-full p-2 bg-card-foreground shadow-sm border overflow-hidden">

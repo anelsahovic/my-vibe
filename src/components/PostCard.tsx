@@ -137,7 +137,7 @@ export default function PostCard({ post, user }: Props) {
     <Card className="w-full">
       <CardContent className="p-4 sm:p-6">
         <div className="space-y-4">
-          <div className="flex space-x-3 sm:space-x-4">
+          <div className="flex space-x-3 sm:space-x-4 ">
             <Link href={`/profile/${post.author.username}`}>
               <Avatar>
                 <AvatarImage src={post.author?.image as string} />
@@ -147,7 +147,7 @@ export default function PostCard({ post, user }: Props) {
               </Avatar>
             </Link>
 
-            {/* POST HEADER & TEXT CONTENT */}
+            {/* POST HEADER  */}
             <div className="flex-1 min-w-0">
               {/* header */}
               <div className="flex items-start justify-between">
@@ -201,22 +201,21 @@ export default function PostCard({ post, user }: Props) {
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
-
-              {/* post content */}
-              <p className="mt-5 text-sm text-foreground break-words">
-                {post.content}
-              </p>
             </div>
           </div>
 
+          {/* post content */}
+          <p className="mt-5 text-sm text-foreground break-words">
+            {post.content}
+          </p>
+
           {/* POST IMAGE */}
           {post.image && (
-            <div className="rounded-lg overflow-hidden">
+            <div className="relative h-[300px] w-full">
               <Image
                 src={post.image}
                 alt="Post content"
-                width={200}
-                height={200}
+                fill={true}
                 className="object-cover"
               />
             </div>

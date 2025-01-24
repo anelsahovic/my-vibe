@@ -1,8 +1,10 @@
+import { getEvents } from '@/actions/event.action';
 import { getPosts } from '@/actions/post.actions';
 import { getDbUser, getRandomUsers } from '@/actions/user.action';
 import CreatePost from '@/components/CreatePost';
 import EventSmallCard from '@/components/EventSmallCard';
 import PostCard from '@/components/PostCard';
+import SearchFormReset from '@/components/SearchFormReset';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { buttonVariants } from '@/components/ui/button';
 import {
@@ -17,141 +19,27 @@ import { Post } from '@/lib/types';
 import Link from 'next/link';
 import { MdEventNote } from 'react-icons/md';
 
-let events = [
-  {
-    id: 'e1',
-    name: 'Tech Innovators Conference',
-    description: 'Join industry leaders to discuss the future of technology.',
-    location: 'Berlin, Germany',
-    startDate: new Date('2025-01-20T09:00:00Z'),
-    endDate: new Date('2025-01-20T17:00:00Z'),
-    isOnline: false,
-    capacity: 500,
-    price: 199.99,
-    organizer: {
-      id: 'u1',
-      name: 'John Doe',
-    },
-    attendees: [
-      { id: 'u2', name: 'Alice Johnson' },
-      { id: 'u3', name: 'Bob Smith' },
-    ],
-  },
-  {
-    id: 'e2',
-    name: 'Web3 Summit',
-    description: 'Explore the possibilities of decentralized web technologies.',
-    location: 'Online',
-    startDate: new Date('2025-02-10T13:00:00Z'),
-    endDate: new Date('2025-02-10T18:00:00Z'),
-    isOnline: true,
-    capacity: 1000,
-    price: 0,
-    organizer: {
-      id: 'u4',
-      name: 'Jane Williams',
-    },
-    attendees: [
-      { id: 'u5', name: 'Michael Brown' },
-      { id: 'u6', name: 'Emily Davis' },
-    ],
-  },
-  {
-    id: 'e3',
-    name: 'Fitness Bootcamp',
-    description:
-      'A weekend to kickstart your fitness journey with top trainers.',
-    location: 'New York City, USA',
-    startDate: new Date('2025-03-01T08:00:00Z'),
-    endDate: new Date('2025-03-02T16:00:00Z'),
-    isOnline: false,
-    capacity: 50,
-    price: 49.99,
-    organizer: {
-      id: 'u7',
-      name: 'Chris Taylor',
-    },
-    attendees: [
-      { id: 'u8', name: 'Sophia Wilson' },
-      { id: 'u9', name: 'Daniel Martinez' },
-    ],
-  },
-  {
-    id: 'e4',
-    name: 'Art Workshop for Beginners',
-    description: 'Learn the basics of painting and sketching from an expert.',
-    location: 'Paris, France',
-    startDate: new Date('2025-03-15T10:00:00Z'),
-    endDate: new Date('2025-03-15T15:00:00Z'),
-    isOnline: false,
-    capacity: 20,
-    price: 30.0,
-    organizer: {
-      id: 'u10',
-      name: 'Laura Lee',
-    },
-    attendees: [],
-  },
-  {
-    id: 'e5',
-    name: 'Entrepreneurship Bootcamp',
-    description: 'A hands-on workshop to refine your business ideas.',
-    location: 'San Francisco, USA',
-    startDate: new Date('2025-04-05T10:00:00Z'),
-    endDate: new Date('2025-04-05T17:00:00Z'),
-    isOnline: false,
-    capacity: 100,
-    price: 99.99,
-    organizer: {
-      id: 'u11',
-      name: 'Peter Green',
-    },
-    attendees: [
-      { id: 'u12', name: 'Olivia Clark' },
-      { id: 'u13', name: 'James Walker' },
-    ],
-  },
-];
+type Props = {
+  searchParams: Promise<{ search: string }>;
+};
 
-// let users = [
-//   {
-//     id: 'u1',
-//     name: 'John Doe',
-//     username: 'johndoe',
-//     image: '',
-//   },
-//   {
-//     id: 'u2',
-//     name: 'Brus Willis',
-//     username: 'bruswillis',
-//     image: '',
-//   },
-//   {
-//     id: 'u3',
-//     name: 'Marie Smith',
-//     username: 'mariesmith',
-//     image: '',
-//   },
-//   {
-//     id: 'u4',
-//     name: 'Jack Sparrow',
-//     username: 'jacksparrow',
-//     image: '',
-//   },
-//   {
-//     id: 'u5',
-//     name: 'Mona Gonzales',
-//     username: 'monagonzales',
-//     image: '',
-//   },
-// ];
-
-export default async function page() {
+export default async function page({ searchParams }: Props) {
+  const { search } = await searchParams;
   const user = await getDbUser();
   const users = await getRandomUsers();
   const posts: Post[] = await getPosts();
-
+  let events = await getEvents();
+  if (!events) {
+    return;
+  }
   events = events.slice(0, 4);
+
+  const filteredPosts = posts.filter(
+    (post) =>
+      search && post.content?.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const postsToDisplay = search ? filteredPosts : posts;
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
       {/* left */}
@@ -185,13 +73,27 @@ export default async function page() {
       <div className="lg:col-span-6 flex flex-col items-center justify-center mt-10">
         <div className="w-full flex flex-col items-center space-y-10">
           {/* create post */}
-          <CreatePost />
+          {!search && <CreatePost />}
+
+          {search && (
+            <div className="flex items-center gap-2">
+              <p className="text-center">
+                Showing results for{'  '}
+                <span className="font-semibold">&quot;{search}&quot;</span>
+              </p>
+              <SearchFormReset page="/home" />
+            </div>
+          )}
 
           {/* show posts */}
           <div className="flex flex-col items-center w-full space-y-6">
-            {posts.map((post: Post) => (
-              <PostCard key={post.id} post={post} user={user} />
-            ))}
+            {postsToDisplay.length ? (
+              postsToDisplay.map((post: Post) => (
+                <PostCard key={post.id} post={post} user={user} />
+              ))
+            ) : (
+              <p>No posts found</p>
+            )}
           </div>
         </div>
       </div>
@@ -251,7 +153,12 @@ export default async function page() {
               <CardContent className="flex flex-col items-center justify-center space-y-4 px-3">
                 {users.length ? (
                   users.map((user) => (
-                    <UserSmallCard key={user.id} user={user} btnSize="sm" />
+                    <UserSmallCard
+                      key={user.id}
+                      user={user}
+                      btnSize="sm"
+                      showRemoveButton={false}
+                    />
                   ))
                 ) : (
                   <p>No suggested users</p>

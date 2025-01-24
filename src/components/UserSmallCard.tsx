@@ -9,11 +9,19 @@ import Link from 'next/link';
 type Props = {
   user: UserSmallCardType;
   btnSize: 'sm' | 'default' | 'lg' | 'icon';
+  showRemoveButton?: boolean;
 };
 
-export default async function UserSmallCard({ user, btnSize }: Props) {
-  const showRemoveBtn = await isFollowedBy(user.id);
+export default async function UserSmallCard({
+  user,
+  btnSize,
+  showRemoveButton = true,
+}: Props) {
+  let showRemoveBtn = await isFollowedBy(user.id);
   const isFollowingUser = await isFollowing(user.id);
+  if (showRemoveBtn) {
+    showRemoveBtn = showRemoveButton as boolean;
+  }
   return (
     <Card className="flex items-center justify-between w-full p-2 bg-card-foreground shadow-sm border">
       {/* left-user info */}
