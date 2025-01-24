@@ -11,7 +11,9 @@ export async function GET() {
   // Validate the user session
   if (!user || user === null || !user.id) {
     console.error('User session is invalid or missing:', user);
-    return NextResponse.redirect('http://localhost:3000/login');
+    return NextResponse.redirect(
+      'https://anelsahovic-my-vibe.vercel.app/login'
+    );
   }
 
   try {
@@ -24,9 +26,10 @@ export async function GET() {
 
     // If the user exists, redirect to the home page
     if (dbUser) {
-      return NextResponse.redirect('http://localhost:3000/home');
+      return NextResponse.redirect(
+        'https://anelsahovic-my-vibe.vercel.app/home'
+      );
     }
-
     // If the user doesn't exist, create the user in the database
     await prisma.user.create({
       data: {
@@ -39,7 +42,7 @@ export async function GET() {
     });
 
     // Redirect to the home page after creating the user
-    return NextResponse.redirect('http://localhost:3000/home');
+    return NextResponse.redirect('https://anelsahovic-my-vibe.vercel.app/home');
   } catch (error) {
     console.error('Database operation failed:', error);
     return NextResponse.json(
