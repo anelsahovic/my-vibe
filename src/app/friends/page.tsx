@@ -68,7 +68,7 @@ export default async function FriendsRoute({ searchParams }: Props) {
             )}
 
             {followersToDisplay.length > 0 ? (
-              <div className="w-full max-w-[500px]">
+              <div className="w-full max-w-[500px] flex flex-col gap-4">
                 {followersToDisplay.map((user) => (
                   <UserSmallCard
                     key={user.username}
