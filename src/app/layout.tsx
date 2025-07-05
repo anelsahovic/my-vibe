@@ -22,7 +22,7 @@ export default function RootLayout({
         <TopNavbar />
         <BottomNavbar />
 
-        <main className="max-w-7xl mx-auto px-4 container relative">
+        <main className="max-w-7xl mx-auto px-4 relative">
           <Toaster position="top-center" />
 
           {children}
