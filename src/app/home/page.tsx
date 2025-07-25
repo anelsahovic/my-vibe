@@ -41,7 +41,7 @@ export default async function page({ searchParams }: Props) {
 
   const postsToDisplay = search ? filteredPosts : posts;
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 pt-20">
       {/* left */}
       <div className="hidden lg:block lg:col-span-3">
         <div className="sticky top-28 h-[532px]">
